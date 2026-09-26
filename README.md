@@ -19,4 +19,4 @@ Use **Send game failure** in the app, or [open an issue](https://github.com/mrcg
 
 ## Source
 
-The app is closed source (all rights reserved). The engine it installs, OptiScaler_DLSSNR, is GPL-3.0 and its source is at [mrcgibb9876-hash/OptiScaler_DLSSNR](https://github.com/mrcgibb9876-hash/OptiScaler_DLSSNR).
+The app is closed source (all rights reserved). The engine it installs, OptiScaler_DLSSNR, is GPL-3.0 and the complete source for every engine release is published beside its build, as `OptiScaler_DLSSNR-<version>-source.zip`, at [mrcgibb9876-hash/OptiScaler_DLSSNR-releases](https://github.com/mrcgibb9876-hash/OptiScaler_DLSSNR-releases/releases).
