@@ -1,0 +1,389 @@
+{
+  "_readme": "Known game problems for 'Get help with this game' (src/helprules.js has the format). Shipped with the app; a newer copy at OptiDLSS5-UI-releases/help/help-rules.json (same schema, higher version, minApp met) replaces it without an app release. A rule only matches text and facts; its fix is an action id the app already knows, and still waits for the player's click. Every rule needs English text; the other languages fall back to it. The games[] entries are shared with the Auto route v2 catalog (it adds a route object to the same entries). Test: test/help-rules.test.js.",
+  "schema": 1,
+  "version": "2026-10-04.1",
+  "minApp": "2.15.0",
+  "rules": [
+    {
+      "id": "ai-depth-files-missing",
+      "severity": "problem",
+      "priority": 80,
+      "when": [
+        { "log": "any", "match": "AI depth:? unavailable[^\\n]*?(?<file>DirectML\\.dll|onnxruntime\\.dll|[\\w.-]+\\.onnx) is not beside the engine" }
+      ],
+      "fix": { "action": "copy-ai-files" },
+      "text": {
+        "en": { "title": "The AI depth files are missing", "body": "DLSS 5's AI depth could not start because {file} is not beside the engine. The app can copy the AI files (DirectML, ONNX Runtime and the depth model) into the game folder." },
+        "de": { "title": "Die KI-Tiefendateien fehlen", "body": "Die KI-Tiefe von DLSS 5 konnte nicht starten, weil {file} nicht neben der Engine liegt. Die App kann die KI-Dateien (DirectML, ONNX Runtime und das Tiefenmodell) in den Spielordner kopieren." },
+        "es": { "title": "Faltan los archivos de profundidad por IA", "body": "La profundidad por IA de DLSS 5 no pudo iniciarse porque {file} no está junto al motor. La app puede copiar los archivos de IA (DirectML, ONNX Runtime y el modelo de profundidad) a la carpeta del juego." },
+        "fr": { "title": "Les fichiers de profondeur IA manquent", "body": "La profondeur IA de DLSS 5 n'a pas pu démarrer car {file} n'est pas à côté du moteur. L'application peut copier les fichiers IA (DirectML, ONNX Runtime et le modèle de profondeur) dans le dossier du jeu." },
+        "ko": { "title": "AI 깊이 파일이 없습니다", "body": "{file} 파일이 엔진 옆에 없어서 DLSS 5의 AI 깊이를 시작할 수 없었습니다. 앱이 AI 파일(DirectML, ONNX Runtime, 깊이 모델)을 게임 폴더에 복사할 수 있습니다." },
+        "pt-BR": { "title": "Faltam os arquivos de profundidade por IA", "body": "A profundidade por IA do DLSS 5 não pôde iniciar porque {file} não está ao lado do motor. O app pode copiar os arquivos de IA (DirectML, ONNX Runtime e o modelo de profundidade) para a pasta do jogo." },
+        "ru": { "title": "Нет файлов ИИ-глубины", "body": "ИИ-глубина DLSS 5 не запустилась: {file} не лежит рядом с движком. Приложение может скопировать файлы ИИ (DirectML, ONNX Runtime и модель глубины) в папку игры." },
+        "zh-CN": { "title": "缺少 AI 深度文件", "body": "DLSS 5 的 AI 深度无法启动，因为 {file} 不在引擎旁边。应用可以把 AI 文件（DirectML、ONNX Runtime 和深度模型）复制到游戏文件夹。" }
+      }
+    },
+    {
+      "id": "ai-depth-device-lost",
+      "severity": "problem",
+      "priority": 70,
+      "when": [
+        { "log": "any", "match": "AI depth[^\\n]*(?:887A0005|device instance has been suspended|model session could not be made)" }
+      ],
+      "fix": { "action": "depth-source-game" },
+      "text": {
+        "en": { "title": "The AI depth could not start on this PC", "body": "The AI depth model lost its GPU device while it was being set up (DirectML 887A0005). DLSS 5 keeps running without it. The app can set Depth source to the game's own depth so it stops trying.", "causes": ["The GPU was reset while the game started (a driver timeout, an overclock, or video memory running out).", "An overlay or capture tool hooking the game at the same moment.", "An old graphics driver."] },
+        "de": { "title": "Die KI-Tiefe konnte auf diesem PC nicht starten", "body": "Das KI-Tiefenmodell hat beim Einrichten sein GPU-Gerät verloren (DirectML 887A0005). DLSS 5 läuft ohne sie weiter. Die App kann die Tiefenquelle auf die eigene Tiefe des Spiels stellen, damit es nicht weiter versucht wird.", "causes": ["Die GPU wurde beim Spielstart zurückgesetzt (Treiber-Timeout, Übertaktung oder voller Videospeicher).", "Ein Overlay oder Aufnahmeprogramm hängt sich zur selben Zeit ins Spiel.", "Ein alter Grafiktreiber."] },
+        "es": { "title": "La profundidad por IA no pudo iniciarse en este PC", "body": "El modelo de profundidad por IA perdió su dispositivo de GPU al prepararse (DirectML 887A0005). DLSS 5 sigue funcionando sin ella. La app puede poner la fuente de profundidad en la del propio juego para que deje de intentarlo.", "causes": ["La GPU se reinició al arrancar el juego (tiempo de espera del controlador, overclock o memoria de vídeo agotada).", "Un overlay o una herramienta de captura enganchándose al juego al mismo tiempo.", "Un controlador gráfico antiguo."] },
+        "fr": { "title": "La profondeur IA n'a pas pu démarrer sur ce PC", "body": "Le modèle de profondeur IA a perdu son périphérique GPU pendant sa préparation (DirectML 887A0005). DLSS 5 continue sans elle. L'application peut régler la source de profondeur sur celle du jeu pour qu'il arrête d'essayer.", "causes": ["Le GPU a été réinitialisé au lancement du jeu (délai du pilote, overclocking ou mémoire vidéo saturée).", "Un overlay ou un outil de capture qui s'accroche au jeu au même moment.", "Un pilote graphique ancien."] },
+        "ko": { "title": "이 PC에서 AI 깊이를 시작할 수 없었습니다", "body": "AI 깊이 모델이 준비 중에 GPU 장치를 잃었습니다(DirectML 887A0005). DLSS 5는 AI 깊이 없이 계속 실행됩니다. 앱이 깊이 소스를 게임 자체 깊이로 설정해 더 이상 시도하지 않게 할 수 있습니다.", "causes": ["게임 시작 중 GPU가 재설정됨(드라이버 시간 초과, 오버클럭 또는 비디오 메모리 부족).", "같은 순간 게임에 연결되는 오버레이나 캡처 도구.", "오래된 그래픽 드라이버."] },
+        "pt-BR": { "title": "A profundidade por IA não pôde iniciar neste PC", "body": "O modelo de profundidade por IA perdeu o dispositivo de GPU durante a preparação (DirectML 887A0005). O DLSS 5 continua sem ela. O app pode definir a fonte de profundidade como a do próprio jogo para parar de tentar.", "causes": ["A GPU foi reiniciada ao abrir o jogo (tempo limite do driver, overclock ou memória de vídeo esgotada).", "Um overlay ou ferramenta de captura se conectando ao jogo ao mesmo tempo.", "Um driver de vídeo antigo."] },
+        "ru": { "title": "ИИ-глубина не смогла запуститься на этом ПК", "body": "Модель ИИ-глубины потеряла устройство GPU при подготовке (DirectML 887A0005). DLSS 5 работает и без неё. Приложение может переключить источник глубины на собственную глубину игры, чтобы попытки прекратились.", "causes": ["GPU был сброшен при запуске игры (таймаут драйвера, разгон или нехватка видеопамяти).", "Оверлей или программа записи, подключающаяся к игре в тот же момент.", "Старый графический драйвер."] },
+        "zh-CN": { "title": "AI 深度无法在这台电脑上启动", "body": "AI 深度模型在初始化时丢失了 GPU 设备（DirectML 887A0005）。DLSS 5 会在没有它的情况下继续运行。应用可以把深度来源设为游戏自身的深度，让它不再尝试。", "causes": ["游戏启动时 GPU 被重置（驱动超时、超频或显存耗尽）。", "覆盖层或录制工具在同一时刻挂接游戏。", "显卡驱动过旧。"] }
+      }
+    },
+    {
+      "id": "vram-overcommitted",
+      "severity": "problem",
+      "priority": 75,
+      "when": [
+        { "log": "optiscaler", "match": "not building the model yet -- video memory (?<used>\\d+) of (?<budget>\\d+) MB in use" }
+      ],
+      "fix": null,
+      "text": {
+        "en": { "title": "Video memory is full, so DLSS 5 is waiting", "body": "DLSS 5 did not build its model because {used} MB of the {budget} MB of video memory was already in use. It waits rather than risk losing the GPU.", "causes": ["NVIDIA Smooth Motion on for this game (it has been seen taking over 20 GB) -- turn it off in the NVIDIA App.", "Another game, a browser or a video app holding video memory -- close them.", "Texture quality or resolution too high for this card -- lower them one step."] },
+        "de": { "title": "Der Videospeicher ist voll, DLSS 5 wartet", "body": "DLSS 5 hat sein Modell nicht gebaut, weil {used} MB der {budget} MB Videospeicher schon belegt waren. Es wartet, statt den Verlust der GPU zu riskieren.", "causes": ["NVIDIA Smooth Motion ist für dieses Spiel an (es belegte schon über 20 GB) -- in der NVIDIA App ausschalten.", "Ein anderes Spiel, ein Browser oder eine Video-App belegt Videospeicher -- schließen.", "Texturqualität oder Auflösung zu hoch für diese Karte -- eine Stufe senken."] },
+        "es": { "title": "La memoria de vídeo está llena y DLSS 5 espera", "body": "DLSS 5 no creó su modelo porque {used} MB de los {budget} MB de memoria de vídeo ya estaban en uso. Espera en lugar de arriesgarse a perder la GPU.", "causes": ["NVIDIA Smooth Motion activado en este juego (se ha visto usar más de 20 GB): desactívalo en la NVIDIA App.", "Otro juego, un navegador o una app de vídeo ocupando memoria de vídeo: ciérralos.", "Calidad de texturas o resolución demasiado altas para esta tarjeta: bájalas un nivel."] },
+        "fr": { "title": "La mémoire vidéo est pleine, DLSS 5 attend", "body": "DLSS 5 n'a pas construit son modèle car {used} Mo des {budget} Mo de mémoire vidéo étaient déjà utilisés. Il attend plutôt que de risquer de perdre le GPU.", "causes": ["NVIDIA Smooth Motion activé pour ce jeu (il a déjà occupé plus de 20 Go) : désactivez-le dans l'application NVIDIA.", "Un autre jeu, un navigateur ou une application vidéo qui occupe la mémoire vidéo : fermez-les.", "Qualité des textures ou résolution trop élevées pour cette carte : baissez-les d'un cran."] },
+        "ko": { "title": "비디오 메모리가 가득 차 DLSS 5가 대기 중입니다", "body": "비디오 메모리 {budget} MB 중 {used} MB가 이미 사용 중이라 DLSS 5가 모델을 만들지 않았습니다. GPU를 잃을 위험을 피하려고 기다립니다.", "causes": ["이 게임에 NVIDIA Smooth Motion이 켜져 있음(20 GB 이상 사용하는 것이 확인됨) -- NVIDIA 앱에서 끄세요.", "다른 게임, 브라우저, 동영상 앱이 비디오 메모리를 사용 중 -- 닫으세요.", "이 그래픽 카드에 비해 텍스처 품질이나 해상도가 너무 높음 -- 한 단계 낮추세요."] },
+        "pt-BR": { "title": "A memória de vídeo está cheia e o DLSS 5 está esperando", "body": "O DLSS 5 não criou o modelo porque {used} MB dos {budget} MB de memória de vídeo já estavam em uso. Ele espera em vez de arriscar perder a GPU.", "causes": ["NVIDIA Smooth Motion ligado neste jogo (já foi visto usando mais de 20 GB) -- desligue no NVIDIA App.", "Outro jogo, navegador ou app de vídeo ocupando memória de vídeo -- feche-os.", "Qualidade de texturas ou resolução alta demais para esta placa -- reduza um nível."] },
+        "ru": { "title": "Видеопамять заполнена, DLSS 5 ждёт", "body": "DLSS 5 не построил модель: уже занято {used} МБ из {budget} МБ видеопамяти. Он ждёт, чтобы не рисковать потерей GPU.", "causes": ["Для этой игры включён NVIDIA Smooth Motion (замечено более 20 ГБ) -- выключите его в NVIDIA App.", "Другая игра, браузер или видеоприложение занимают видеопамять -- закройте их.", "Качество текстур или разрешение слишком высоки для этой карты -- снизьте на одну ступень."] },
+        "zh-CN": { "title": "显存已满，DLSS 5 正在等待", "body": "DLSS 5 没有构建模型，因为 {budget} MB 显存中已有 {used} MB 被占用。它选择等待，而不是冒丢失 GPU 的风险。", "causes": ["此游戏开启了 NVIDIA Smooth Motion（曾观察到占用超过 20 GB）——在 NVIDIA App 中关闭它。", "其他游戏、浏览器或视频应用占用了显存——请关闭它们。", "纹理质量或分辨率对这张显卡来说过高——降低一档。"] }
+      }
+    },
+    {
+      "id": "hags-off-dlssg",
+      "severity": "problem",
+      "priority": 85,
+      "when": [
+        { "fact": "game.dlssgBlocker", "equals": "hags" }
+      ],
+      "fix": { "action": "hags-enable" },
+      "text": {
+        "en": { "title": "Hardware-accelerated GPU scheduling is off", "body": "NVIDIA DLSS Frame Generation needs Windows' Hardware-accelerated GPU scheduling. The app can turn it on (Windows asks for permission, and a restart is needed)." },
+        "de": { "title": "Hardwarebeschleunigte GPU-Planung ist aus", "body": "NVIDIA DLSS Frame Generation braucht die hardwarebeschleunigte GPU-Planung von Windows. Die App kann sie einschalten (Windows fragt nach der Erlaubnis, ein Neustart ist nötig)." },
+        "es": { "title": "La programación de GPU acelerada por hardware está desactivada", "body": "NVIDIA DLSS Frame Generation necesita la programación de GPU acelerada por hardware de Windows. La app puede activarla (Windows pedirá permiso y hará falta reiniciar)." },
+        "fr": { "title": "La planification GPU à accélération matérielle est désactivée", "body": "NVIDIA DLSS Frame Generation a besoin de la planification GPU à accélération matérielle de Windows. L'application peut l'activer (Windows demande l'autorisation, un redémarrage est nécessaire)." },
+        "ko": { "title": "하드웨어 가속 GPU 예약이 꺼져 있습니다", "body": "NVIDIA DLSS 프레임 생성에는 Windows의 하드웨어 가속 GPU 예약이 필요합니다. 앱이 켤 수 있습니다(Windows가 권한을 묻고, 다시 시작해야 합니다)." },
+        "pt-BR": { "title": "O agendamento de GPU acelerado por hardware está desligado", "body": "O NVIDIA DLSS Frame Generation precisa do agendamento de GPU acelerado por hardware do Windows. O app pode ligá-lo (o Windows pede permissão e é preciso reiniciar)." },
+        "ru": { "title": "Аппаратное планирование GPU выключено", "body": "NVIDIA DLSS Frame Generation требует аппаратного планирования GPU в Windows. Приложение может включить его (Windows запросит разрешение, нужна перезагрузка)." },
+        "zh-CN": { "title": "硬件加速 GPU 计划已关闭", "body": "NVIDIA DLSS 帧生成需要 Windows 的硬件加速 GPU 计划。应用可以将其打开（Windows 会请求权限，并需要重启）。" }
+      }
+    },
+    {
+      "id": "hags-restart-pending",
+      "severity": "info",
+      "priority": 60,
+      "when": [
+        { "fact": "game.dlssgBlocker", "equals": "hags-restart" }
+      ],
+      "fix": null,
+      "text": {
+        "en": { "title": "Restart Windows to finish turning on GPU scheduling", "body": "Hardware-accelerated GPU scheduling was turned on and takes effect after a restart. NVIDIA DLSS Frame Generation stays off until then." },
+        "de": { "title": "Windows neu starten, um die GPU-Planung fertig einzuschalten", "body": "Die hardwarebeschleunigte GPU-Planung wurde eingeschaltet und wirkt nach einem Neustart. Bis dahin bleibt NVIDIA DLSS Frame Generation aus." },
+        "es": { "title": "Reinicia Windows para terminar de activar la programación de GPU", "body": "La programación de GPU acelerada por hardware se activó y surte efecto tras reiniciar. NVIDIA DLSS Frame Generation sigue desactivado hasta entonces." },
+        "fr": { "title": "Redémarrez Windows pour finir d'activer la planification GPU", "body": "La planification GPU à accélération matérielle a été activée et prend effet après un redémarrage. NVIDIA DLSS Frame Generation reste désactivé d'ici là." },
+        "ko": { "title": "GPU 예약을 마저 켜려면 Windows를 다시 시작하세요", "body": "하드웨어 가속 GPU 예약이 켜졌으며 다시 시작한 후 적용됩니다. 그때까지 NVIDIA DLSS 프레임 생성은 꺼져 있습니다." },
+        "pt-BR": { "title": "Reinicie o Windows para concluir a ativação do agendamento de GPU", "body": "O agendamento de GPU acelerado por hardware foi ligado e vale após reiniciar. Até lá o NVIDIA DLSS Frame Generation fica desligado." },
+        "ru": { "title": "Перезагрузите Windows, чтобы включить планирование GPU", "body": "Аппаратное планирование GPU включено и заработает после перезагрузки. До этого NVIDIA DLSS Frame Generation выключен." },
+        "zh-CN": { "title": "重启 Windows 以完成打开 GPU 计划", "body": "硬件加速 GPU 计划已打开，重启后生效。在此之前 NVIDIA DLSS 帧生成保持关闭。" }
+      }
+    },
+    {
+      "id": "reframework-beside-dlssg",
+      "severity": "problem",
+      "priority": 85,
+      "when": [
+        { "fact": "game.dlssgBlocker", "equals": "reframework" },
+        { "fact": "game.reEngine", "equals": true }
+      ],
+      "fix": { "action": "take-out-reframework" },
+      "text": {
+        "en": { "title": "REFramework blocks DLSS Frame Generation", "body": "REFramework (dinput8.dll) beside NVIDIA DLSS Frame Generation hangs this game at launch. This game runs DLSS 5 at Present and does not need REFramework, so the app can take it out (moved to a backup folder, nothing deleted)." },
+        "de": { "title": "REFramework blockiert DLSS Frame Generation", "body": "REFramework (dinput8.dll) neben NVIDIA DLSS Frame Generation lässt dieses Spiel beim Start hängen. Dieses Spiel führt DLSS 5 bei Present aus und braucht REFramework nicht, die App kann es also herausnehmen (in einen Sicherungsordner verschoben, nichts gelöscht)." },
+        "es": { "title": "REFramework bloquea DLSS Frame Generation", "body": "REFramework (dinput8.dll) junto a NVIDIA DLSS Frame Generation cuelga este juego al iniciar. Este juego ejecuta DLSS 5 en Present y no necesita REFramework, así que la app puede quitarlo (se mueve a una carpeta de copia, no se borra nada)." },
+        "fr": { "title": "REFramework bloque DLSS Frame Generation", "body": "REFramework (dinput8.dll) à côté de NVIDIA DLSS Frame Generation bloque ce jeu au lancement. Ce jeu exécute DLSS 5 au Present et n'a pas besoin de REFramework : l'application peut le retirer (déplacé dans un dossier de sauvegarde, rien n'est supprimé)." },
+        "ko": { "title": "REFramework가 DLSS 프레임 생성을 막습니다", "body": "NVIDIA DLSS 프레임 생성 옆의 REFramework(dinput8.dll)가 이 게임을 시작할 때 멈추게 합니다. 이 게임은 Present에서 DLSS 5를 실행하므로 REFramework가 필요 없습니다. 앱이 이를 빼낼 수 있습니다(백업 폴더로 이동, 삭제하지 않음)." },
+        "pt-BR": { "title": "O REFramework bloqueia o DLSS Frame Generation", "body": "O REFramework (dinput8.dll) ao lado do NVIDIA DLSS Frame Generation trava este jogo ao iniciar. Este jogo roda o DLSS 5 no Present e não precisa do REFramework, então o app pode tirá-lo (movido para uma pasta de backup, nada é apagado)." },
+        "ru": { "title": "REFramework мешает DLSS Frame Generation", "body": "REFramework (dinput8.dll) рядом с NVIDIA DLSS Frame Generation вешает эту игру при запуске. Игра запускает DLSS 5 на Present и не нуждается в REFramework, поэтому приложение может убрать его (перенос в папку резервной копии, ничего не удаляется)." },
+        "zh-CN": { "title": "REFramework 阻止了 DLSS 帧生成", "body": "REFramework（dinput8.dll）与 NVIDIA DLSS 帧生成同时存在会让此游戏在启动时卡住。此游戏在 Present 运行 DLSS 5，不需要 REFramework，应用可以将其移出（移到备份文件夹，不删除任何东西）。" }
+      }
+    },
+    {
+      "id": "panel-key-invalid",
+      "severity": "problem",
+      "priority": 65,
+      "when": [
+        { "fact": "keys.invalid", "gte": 1 }
+      ],
+      "fix": { "action": "repair-panel-key" },
+      "text": {
+        "en": { "title": "A panel key no one can press is saved", "body": "OptiScaler.ini holds a key binding that is not a real key, so the DLSS 5 panel may not open or close. The app can put it back to its default (Insert for the panel)." },
+        "de": { "title": "Eine Panel-Taste, die niemand drücken kann, ist gespeichert", "body": "OptiScaler.ini enthält eine Tastenbelegung, die keine echte Taste ist, daher lässt sich das DLSS-5-Panel womöglich nicht öffnen oder schließen. Die App kann sie auf den Standard zurücksetzen (Einfg für das Panel)." },
+        "es": { "title": "Hay guardada una tecla de panel que nadie puede pulsar", "body": "OptiScaler.ini tiene una asignación que no es una tecla real, así que el panel de DLSS 5 puede no abrirse ni cerrarse. La app puede devolverla a su valor por defecto (Insert para el panel)." },
+        "fr": { "title": "Une touche de panneau impossible à presser est enregistrée", "body": "OptiScaler.ini contient un raccourci qui n'est pas une vraie touche, donc le panneau DLSS 5 risque de ne pas s'ouvrir ou se fermer. L'application peut le remettre par défaut (Insert pour le panneau)." },
+        "ko": { "title": "누를 수 없는 패널 키가 저장되어 있습니다", "body": "OptiScaler.ini에 실제 키가 아닌 키 바인딩이 있어 DLSS 5 패널이 열리거나 닫히지 않을 수 있습니다. 앱이 기본값(패널은 Insert)으로 되돌릴 수 있습니다." },
+        "pt-BR": { "title": "Há uma tecla de painel salva que ninguém consegue apertar", "body": "O OptiScaler.ini tem um atalho que não é uma tecla real, então o painel do DLSS 5 pode não abrir nem fechar. O app pode voltar ao padrão (Insert para o painel)." },
+        "ru": { "title": "Сохранена клавиша панели, которую нельзя нажать", "body": "В OptiScaler.ini записано сочетание, которое не является настоящей клавишей, поэтому панель DLSS 5 может не открываться или не закрываться. Приложение может вернуть значение по умолчанию (Insert для панели)." },
+        "zh-CN": { "title": "保存了一个无法按下的面板按键", "body": "OptiScaler.ini 中的按键绑定不是真实按键，因此 DLSS 5 面板可能无法打开或关闭。应用可以将其恢复为默认值（面板为 Insert）。" }
+      }
+    },
+    {
+      "id": "helper-quarantined",
+      "severity": "problem",
+      "priority": 90,
+      "scope": { "bitness": 32 },
+      "when": [
+        { "any": [
+          { "all": [ { "journal": "host64/nrhost64\\.exe" }, { "noFile": "^host64/nrhost64\\.exe$" } ] },
+          { "all": [ { "journal": "host64/winmm\\.dll" }, { "noFile": "^host64/winmm\\.dll$" } ] }
+        ] }
+      ],
+      "fix": null,
+      "text": {
+        "en": { "title": "Windows Security probably removed the 64-bit helper", "body": "This app placed the helper in host64\\ and it is gone now. On a 32-bit game DLSS 5 runs in that helper, so nothing can work without it. Open Windows Security > Protection history, restore the file and allow it, then press Install again. Installing again before that only lets it be removed again." },
+        "de": { "title": "Windows-Sicherheit hat wahrscheinlich den 64-Bit-Helfer entfernt", "body": "Diese App hat den Helfer in host64\\ abgelegt, und er ist jetzt weg. Bei einem 32-Bit-Spiel läuft DLSS 5 in diesem Helfer, ohne ihn geht nichts. Öffne Windows-Sicherheit > Schutzverlauf, stelle die Datei wieder her und lasse sie zu, dann drücke erneut Installieren. Vorher neu zu installieren lässt sie nur wieder entfernen." },
+        "es": { "title": "Seguridad de Windows probablemente quitó el ayudante de 64 bits", "body": "Esta app colocó el ayudante en host64\\ y ya no está. En un juego de 32 bits DLSS 5 se ejecuta en ese ayudante, así que sin él nada funciona. Abre Seguridad de Windows > Historial de protección, restaura el archivo y permítelo, y luego pulsa Instalar otra vez. Reinstalar antes solo hará que se vuelva a quitar." },
+        "fr": { "title": "La Sécurité Windows a probablement supprimé l'assistant 64 bits", "body": "Cette application a placé l'assistant dans host64\\ et il a disparu. Sur un jeu 32 bits, DLSS 5 s'exécute dans cet assistant, donc rien ne marche sans lui. Ouvrez Sécurité Windows > Historique de protection, restaurez le fichier et autorisez-le, puis cliquez à nouveau sur Installer. Réinstaller avant cela ne fera que le faire supprimer de nouveau." },
+        "ko": { "title": "Windows 보안이 64비트 도우미를 제거한 것 같습니다", "body": "이 앱이 host64\\에 둔 도우미가 지금 없습니다. 32비트 게임에서는 DLSS 5가 그 도우미에서 실행되므로 없으면 아무것도 작동하지 않습니다. Windows 보안 > 보호 기록을 열어 파일을 복원하고 허용한 다음 다시 설치를 누르세요. 그 전에 다시 설치하면 또 제거될 뿐입니다." },
+        "pt-BR": { "title": "A Segurança do Windows provavelmente removeu o auxiliar de 64 bits", "body": "Este app colocou o auxiliar em host64\\ e ele sumiu. Em um jogo de 32 bits o DLSS 5 roda nesse auxiliar, então nada funciona sem ele. Abra Segurança do Windows > Histórico de proteção, restaure o arquivo e permita-o, depois clique em Instalar de novo. Reinstalar antes disso só faz ele ser removido outra vez." },
+        "ru": { "title": "Безопасность Windows, вероятно, удалила 64-битного помощника", "body": "Приложение поместило помощника в host64\\, а теперь его нет. В 32-битной игре DLSS 5 работает в этом помощнике, без него ничего не заработает. Откройте Безопасность Windows > Журнал защиты, восстановите файл и разрешите его, затем снова нажмите Установить. Переустановка до этого приведёт лишь к повторному удалению." },
+        "zh-CN": { "title": "Windows 安全中心可能删除了 64 位辅助程序", "body": "本应用放在 host64\\ 中的辅助程序现在不见了。在 32 位游戏中 DLSS 5 运行在这个辅助程序里，没有它什么都无法工作。打开 Windows 安全中心 > 保护历史记录，还原该文件并允许它，然后再次点击安装。在此之前重新安装只会让它再次被删除。" }
+      }
+    },
+    {
+      "id": "helper-no-frames",
+      "severity": "problem",
+      "priority": 70,
+      "scope": { "bitness": 32 },
+      "when": [
+        { "any": [
+          { "live": "nr.waiting", "equals": "helperNoFrames" },
+          { "all": [ { "logPresent": "nrcap32" }, { "log": "nrcap32", "absent": "frames go to the helper|frame \\d+ delivered" } ] }
+        ] }
+      ],
+      "fix": null,
+      "text": {
+        "en": { "title": "The 64-bit helper got no frames from the game", "body": "nrcap32 loaded into the game but never handed a frame to the helper, so DLSS 5 had nothing to work on.", "causes": ["The game runs in exclusive fullscreen -- switch it to borderless or windowed in its own settings.", "An overlay (RTSS, Steam, Discord, MSI Afterburner) hooks the game first -- turn it off for this game and try again.", "The game never loaded the DLL nrcap32 is named after (dinput8.dll or dinput.dll) -- the report shows which one is in place.", "The game draws through a path the capture does not hook (OpenGL, or a launcher window) -- start the game itself, not its launcher."] },
+        "de": { "title": "Der 64-Bit-Helfer bekam keine Bilder vom Spiel", "body": "nrcap32 wurde ins Spiel geladen, hat dem Helfer aber nie ein Bild übergeben, DLSS 5 hatte also nichts zu tun.", "causes": ["Das Spiel läuft im exklusiven Vollbild -- in seinen Einstellungen auf randloses Fenster oder Fenster stellen.", "Ein Overlay (RTSS, Steam, Discord, MSI Afterburner) hängt sich zuerst ein -- für dieses Spiel ausschalten und erneut versuchen.", "Das Spiel hat die DLL, als die nrcap32 benannt ist (dinput8.dll oder dinput.dll), nie geladen -- der Bericht zeigt, welche liegt.", "Das Spiel zeichnet über einen Weg, den die Aufnahme nicht abfängt (OpenGL oder ein Launcher-Fenster) -- das Spiel selbst starten, nicht seinen Launcher."] },
+        "es": { "title": "El ayudante de 64 bits no recibió fotogramas del juego", "body": "nrcap32 se cargó en el juego pero nunca pasó un fotograma al ayudante, así que DLSS 5 no tuvo con qué trabajar.", "causes": ["El juego usa pantalla completa exclusiva: cámbialo a ventana sin bordes o ventana en sus ajustes.", "Un overlay (RTSS, Steam, Discord, MSI Afterburner) se engancha primero: desactívalo para este juego y prueba otra vez.", "El juego nunca cargó la DLL cuyo nombre usa nrcap32 (dinput8.dll o dinput.dll): el informe muestra cuál está puesta.", "El juego dibuja por una vía que la captura no intercepta (OpenGL o una ventana de lanzador): inicia el juego en sí, no su lanzador."] },
+        "fr": { "title": "L'assistant 64 bits n'a reçu aucune image du jeu", "body": "nrcap32 s'est chargé dans le jeu mais n'a jamais transmis d'image à l'assistant, DLSS 5 n'avait donc rien à traiter.", "causes": ["Le jeu est en plein écran exclusif : passez-le en fenêtré sans bordure ou fenêtré dans ses options.", "Un overlay (RTSS, Steam, Discord, MSI Afterburner) s'accroche en premier : désactivez-le pour ce jeu et réessayez.", "Le jeu n'a jamais chargé la DLL dont nrcap32 prend le nom (dinput8.dll ou dinput.dll) : le rapport indique laquelle est en place.", "Le jeu dessine par une voie que la capture n'intercepte pas (OpenGL ou une fenêtre de lanceur) : lancez le jeu lui-même, pas son lanceur."] },
+        "ko": { "title": "64비트 도우미가 게임에서 프레임을 받지 못했습니다", "body": "nrcap32가 게임에 로드되었지만 도우미에게 프레임을 한 번도 넘기지 않아 DLSS 5가 처리할 것이 없었습니다.", "causes": ["게임이 전용 전체 화면으로 실행됨 -- 게임 설정에서 테두리 없는 창 또는 창 모드로 바꾸세요.", "오버레이(RTSS, Steam, Discord, MSI Afterburner)가 먼저 게임에 연결됨 -- 이 게임에서 끄고 다시 시도하세요.", "게임이 nrcap32의 이름(dinput8.dll 또는 dinput.dll)인 DLL을 로드하지 않음 -- 보고서에서 어떤 것이 있는지 볼 수 있습니다.", "게임이 캡처가 가로채지 않는 경로(OpenGL 또는 런처 창)로 그림 -- 런처가 아닌 게임 자체를 실행하세요."] },
+        "pt-BR": { "title": "O auxiliar de 64 bits não recebeu quadros do jogo", "body": "O nrcap32 foi carregado no jogo, mas nunca passou um quadro ao auxiliar, então o DLSS 5 não teve com o que trabalhar.", "causes": ["O jogo está em tela cheia exclusiva -- mude para janela sem bordas ou janela nas opções dele.", "Um overlay (RTSS, Steam, Discord, MSI Afterburner) se conecta primeiro -- desligue-o para este jogo e tente de novo.", "O jogo nunca carregou a DLL cujo nome o nrcap32 usa (dinput8.dll ou dinput.dll) -- o relatório mostra qual está no lugar.", "O jogo desenha por um caminho que a captura não intercepta (OpenGL ou uma janela de launcher) -- abra o jogo em si, não o launcher."] },
+        "ru": { "title": "64-битный помощник не получил кадров от игры", "body": "nrcap32 загрузился в игру, но так и не передал помощнику ни одного кадра, поэтому DLSS 5 нечего было обрабатывать.", "causes": ["Игра работает в эксклюзивном полноэкранном режиме -- переключите её на окно без рамки или окно в её настройках.", "Оверлей (RTSS, Steam, Discord, MSI Afterburner) подключается первым -- отключите его для этой игры и попробуйте снова.", "Игра так и не загрузила DLL, под именем которой работает nrcap32 (dinput8.dll или dinput.dll) -- в отчёте видно, какая на месте.", "Игра рисует путём, который захват не перехватывает (OpenGL или окно лаунчера) -- запускайте саму игру, а не лаунчер."] },
+        "zh-CN": { "title": "64 位辅助程序没有收到游戏画面", "body": "nrcap32 已载入游戏，但从未把任何一帧交给辅助程序，因此 DLSS 5 无事可做。", "causes": ["游戏以独占全屏运行——在游戏设置中改为无边框窗口或窗口模式。", "覆盖层（RTSS、Steam、Discord、MSI Afterburner）先挂接了游戏——为此游戏关闭它后重试。", "游戏从未加载 nrcap32 所用名字的 DLL（dinput8.dll 或 dinput.dll）——报告中会显示放置的是哪个。", "游戏通过捕获不拦截的路径绘制（OpenGL 或启动器窗口）——请启动游戏本身，而不是启动器。"] }
+      }
+    },
+    {
+      "id": "helper-went-away",
+      "severity": "problem",
+      "priority": 68,
+      "scope": { "bitness": 32 },
+      "when": [
+        { "log": "nrcap32", "match": "(?<why>host: no helper[^\\n]*|the helper exited \\(code[^\\n]*|the helper went away[^\\n]*|the helper's build failed[^\\n]*|the helper finished no frame in[^\\n]*)" }
+      ],
+      "fix": null,
+      "text": {
+        "en": { "title": "The 64-bit helper stopped", "body": "The game's capture lost its helper: \"{why}\". The helper's own log (host64\\nrhost64.log) is in the report.", "causes": ["Antivirus blocking host64\\nrhost64.exe -- check Windows Security > Protection history.", "Video memory running out -- close other games and video apps.", "An engine build the helper does not match -- press Install again to put matching files in place."] },
+        "de": { "title": "Der 64-Bit-Helfer hat aufgehört", "body": "Die Aufnahme im Spiel hat ihren Helfer verloren: \"{why}\". Das Protokoll des Helfers (host64\\nrhost64.log) ist im Bericht.", "causes": ["Ein Virenschutz blockiert host64\\nrhost64.exe -- Windows-Sicherheit > Schutzverlauf prüfen.", "Der Videospeicher geht aus -- andere Spiele und Video-Apps schließen.", "Ein Engine-Build, zu dem der Helfer nicht passt -- erneut Installieren drücken, um passende Dateien abzulegen."] },
+        "es": { "title": "El ayudante de 64 bits se detuvo", "body": "La captura del juego perdió su ayudante: \"{why}\". El registro del ayudante (host64\\nrhost64.log) está en el informe.", "causes": ["Un antivirus bloqueando host64\\nrhost64.exe: revisa Seguridad de Windows > Historial de protección.", "Memoria de vídeo agotada: cierra otros juegos y apps de vídeo.", "Una versión del motor que no coincide con el ayudante: pulsa Instalar otra vez para poner archivos que coincidan."] },
+        "fr": { "title": "L'assistant 64 bits s'est arrêté", "body": "La capture du jeu a perdu son assistant : « {why} ». Le journal de l'assistant (host64\\nrhost64.log) est dans le rapport.", "causes": ["Un antivirus bloque host64\\nrhost64.exe : vérifiez Sécurité Windows > Historique de protection.", "La mémoire vidéo est saturée : fermez les autres jeux et applications vidéo.", "Une version du moteur qui ne correspond pas à l'assistant : cliquez à nouveau sur Installer pour remettre des fichiers assortis."] },
+        "ko": { "title": "64비트 도우미가 멈췄습니다", "body": "게임의 캡처가 도우미를 잃었습니다: \"{why}\". 도우미 자체 로그(host64\\nrhost64.log)가 보고서에 있습니다.", "causes": ["백신이 host64\\nrhost64.exe를 차단함 -- Windows 보안 > 보호 기록을 확인하세요.", "비디오 메모리 부족 -- 다른 게임과 동영상 앱을 닫으세요.", "도우미와 맞지 않는 엔진 빌드 -- 다시 설치를 눌러 맞는 파일을 넣으세요."] },
+        "pt-BR": { "title": "O auxiliar de 64 bits parou", "body": "A captura do jogo perdeu o auxiliar: \"{why}\". O log do auxiliar (host64\\nrhost64.log) está no relatório.", "causes": ["Um antivírus bloqueando host64\\nrhost64.exe -- veja Segurança do Windows > Histórico de proteção.", "Memória de vídeo esgotada -- feche outros jogos e apps de vídeo.", "Uma versão do motor que não combina com o auxiliar -- clique em Instalar de novo para colocar arquivos compatíveis."] },
+        "ru": { "title": "64-битный помощник остановился", "body": "Захват в игре потерял помощника: «{why}». Журнал помощника (host64\\nrhost64.log) есть в отчёте.", "causes": ["Антивирус блокирует host64\\nrhost64.exe -- проверьте Безопасность Windows > Журнал защиты.", "Заканчивается видеопамять -- закройте другие игры и видеоприложения.", "Сборка движка не совпадает с помощником -- снова нажмите Установить, чтобы положить совместимые файлы."] },
+        "zh-CN": { "title": "64 位辅助程序停止了", "body": "游戏中的捕获失去了辅助程序：“{why}”。辅助程序自己的日志（host64\\nrhost64.log）已包含在报告中。", "causes": ["杀毒软件拦截了 host64\\nrhost64.exe——查看 Windows 安全中心 > 保护历史记录。", "显存耗尽——关闭其他游戏和视频应用。", "引擎版本与辅助程序不匹配——再次点击安装以放入匹配的文件。"] }
+      }
+    },
+    {
+      "id": "waiting-game-upscaler",
+      "severity": "problem",
+      "priority": 60,
+      "when": [
+        { "live": "nr.waiting", "equals": "gameUpscaler" }
+      ],
+      "fix": null,
+      "text": {
+        "en": { "title": "DLSS 5 is on and waiting for the game's own upscaler", "body": "On this route DLSS 5 takes over the game's own DLSS, FSR, XeSS or TAA pass, and the game has not run one yet.", "causes": ["The game's upscaler or anti-aliasing is off -- turn on DLSS (or FSR / XeSS / TAA) in the game's graphics settings.", "You are still in a menu -- load into gameplay; many games only upscale the 3D scene.", "The game needs a restart after changing its upscaler setting."] },
+        "de": { "title": "DLSS 5 ist an und wartet auf den eigenen Upscaler des Spiels", "body": "Auf dieser Route übernimmt DLSS 5 den DLSS-, FSR-, XeSS- oder TAA-Durchgang des Spiels, und das Spiel hat noch keinen ausgeführt.", "causes": ["Upscaler oder Kantenglättung des Spiels ist aus -- in den Grafikeinstellungen DLSS (oder FSR / XeSS / TAA) einschalten.", "Du bist noch in einem Menü -- ins Spiel laden; viele Spiele skalieren nur die 3D-Szene.", "Das Spiel braucht nach dem Ändern der Upscaler-Einstellung einen Neustart."] },
+        "es": { "title": "DLSS 5 está activado y espera al reescalador del propio juego", "body": "En esta ruta DLSS 5 sustituye la pasada de DLSS, FSR, XeSS o TAA del propio juego, y el juego aún no ha ejecutado ninguna.", "causes": ["El reescalado o el antialiasing del juego está desactivado: activa DLSS (o FSR / XeSS / TAA) en los ajustes gráficos del juego.", "Sigues en un menú: entra en la partida; muchos juegos solo reescalan la escena 3D.", "El juego necesita reiniciarse tras cambiar el ajuste de reescalado."] },
+        "fr": { "title": "DLSS 5 est activé et attend l'upscaler du jeu", "body": "Sur cette route, DLSS 5 remplace la passe DLSS, FSR, XeSS ou TAA du jeu, et le jeu n'en a encore exécuté aucune.", "causes": ["L'upscaler ou l'anticrénelage du jeu est désactivé : activez DLSS (ou FSR / XeSS / TAA) dans ses options graphiques.", "Vous êtes encore dans un menu : chargez une partie ; beaucoup de jeux n'upscalent que la scène 3D.", "Le jeu doit être redémarré après le changement de réglage d'upscaling."] },
+        "ko": { "title": "DLSS 5가 켜져 있으며 게임 자체 업스케일러를 기다리는 중입니다", "body": "이 경로에서 DLSS 5는 게임 자체의 DLSS, FSR, XeSS 또는 TAA 패스를 대신하는데, 게임이 아직 그 패스를 실행하지 않았습니다.", "causes": ["게임의 업스케일러나 안티앨리어싱이 꺼져 있음 -- 게임 그래픽 설정에서 DLSS(또는 FSR / XeSS / TAA)를 켜세요.", "아직 메뉴에 있음 -- 게임 플레이로 들어가세요. 많은 게임이 3D 장면만 업스케일합니다.", "업스케일러 설정을 바꾼 후 게임을 다시 시작해야 함."] },
+        "pt-BR": { "title": "O DLSS 5 está ligado e esperando o upscaler do próprio jogo", "body": "Nesta rota o DLSS 5 assume a passada de DLSS, FSR, XeSS ou TAA do próprio jogo, e o jogo ainda não executou nenhuma.", "causes": ["O upscaler ou o anti-aliasing do jogo está desligado -- ligue DLSS (ou FSR / XeSS / TAA) nas opções gráficas do jogo.", "Você ainda está num menu -- entre na partida; muitos jogos só fazem upscale da cena 3D.", "O jogo precisa ser reiniciado depois de mudar a opção de upscaler."] },
+        "ru": { "title": "DLSS 5 включён и ждёт собственный апскейлер игры", "body": "На этом маршруте DLSS 5 заменяет проход DLSS, FSR, XeSS или TAA самой игры, а игра ещё не выполнила ни одного.", "causes": ["Апскейлер или сглаживание игры выключены -- включите DLSS (или FSR / XeSS / TAA) в графических настройках игры.", "Вы ещё в меню -- загрузитесь в игру; многие игры масштабируют только 3D-сцену.", "После смены настройки апскейлера игру нужно перезапустить."] },
+        "zh-CN": { "title": "DLSS 5 已开启，正在等待游戏自身的超分", "body": "在这条路线上，DLSS 5 接管游戏自身的 DLSS、FSR、XeSS 或 TAA 处理，但游戏还没有运行过其中任何一个。", "causes": ["游戏的超分或抗锯齿已关闭——在游戏图形设置中打开 DLSS（或 FSR / XeSS / TAA）。", "仍在菜单中——进入实际游戏；许多游戏只对 3D 场景做超分。", "更改超分设置后需要重启游戏。"] }
+      }
+    },
+    {
+      "id": "waiting-present-depth",
+      "severity": "info",
+      "priority": 40,
+      "when": [
+        { "live": "nr.waiting", "equals": "presentDepth" }
+      ],
+      "fix": null,
+      "text": {
+        "en": { "title": "DLSS 5 is looking for the game's scene depth", "body": "This is normal in menus and loading screens. Load into gameplay. If it stays like this in gameplay, set Depth source to AI on the panel's Main page." },
+        "de": { "title": "DLSS 5 sucht die Szenentiefe des Spiels", "body": "In Menüs und Ladebildschirmen ist das normal. Ins Spiel laden. Bleibt es im Spiel so, im Panel auf der Seite Main die Tiefenquelle auf AI stellen." },
+        "es": { "title": "DLSS 5 está buscando la profundidad de escena del juego", "body": "Es normal en menús y pantallas de carga. Entra en la partida. Si sigue así jugando, pon la fuente de profundidad en AI en la página Main del panel." },
+        "fr": { "title": "DLSS 5 cherche la profondeur de scène du jeu", "body": "C'est normal dans les menus et écrans de chargement. Chargez une partie. Si cela reste ainsi en jeu, réglez la source de profondeur sur AI dans la page Main du panneau." },
+        "ko": { "title": "DLSS 5가 게임의 장면 깊이를 찾는 중입니다", "body": "메뉴와 로딩 화면에서는 정상입니다. 게임 플레이로 들어가세요. 플레이 중에도 계속 이렇다면 패널의 Main 페이지에서 깊이 소스를 AI로 설정하세요." },
+        "pt-BR": { "title": "O DLSS 5 está procurando a profundidade da cena do jogo", "body": "Isso é normal em menus e telas de carregamento. Entre na partida. Se continuar assim jogando, defina a fonte de profundidade como AI na página Main do painel." },
+        "ru": { "title": "DLSS 5 ищет глубину сцены игры", "body": "В меню и на экранах загрузки это нормально. Загрузитесь в игру. Если так остаётся и в игре, выберите источник глубины AI на странице Main панели." },
+        "zh-CN": { "title": "DLSS 5 正在寻找游戏的场景深度", "body": "在菜单和加载画面中这是正常的。进入实际游戏。如果游戏中仍是这样，请在面板的 Main 页面把深度来源设为 AI。" }
+      }
+    },
+    {
+      "id": "present-route-stood-down",
+      "severity": "problem",
+      "priority": 55,
+      "when": [
+        { "log": "optiscaler", "match": "DLSS-NR Present route (?:unavailable: |\\(auto\\): stands down -- |\\(auto\\): stays on standby -- )(?<why>[^\\n]+)" }
+      ],
+      "fix": null,
+      "text": {
+        "en": { "title": "The Present route stood down", "body": "The engine did not start DLSS 5 at Present and said why: \"{why}\". This is the line the developer needs; the report carries it." },
+        "de": { "title": "Die Present-Route hat sich zurückgezogen", "body": "Die Engine hat DLSS 5 nicht bei Present gestartet und den Grund genannt: \"{why}\". Diese Zeile braucht der Entwickler; der Bericht enthält sie." },
+        "es": { "title": "La ruta Present se retiró", "body": "El motor no inició DLSS 5 en Present y dijo por qué: \"{why}\". Es la línea que necesita el desarrollador; el informe la incluye." },
+        "fr": { "title": "La route Present s'est retirée", "body": "Le moteur n'a pas démarré DLSS 5 au Present et a dit pourquoi : « {why} ». C'est la ligne dont le développeur a besoin ; le rapport la contient." },
+        "ko": { "title": "Present 경로가 물러났습니다", "body": "엔진이 Present에서 DLSS 5를 시작하지 않았고 이유를 남겼습니다: \"{why}\". 개발자에게 필요한 줄이며 보고서에 포함됩니다." },
+        "pt-BR": { "title": "A rota Present recuou", "body": "O motor não iniciou o DLSS 5 no Present e disse o motivo: \"{why}\". É a linha de que o desenvolvedor precisa; o relatório a inclui." },
+        "ru": { "title": "Маршрут Present отступил", "body": "Движок не запустил DLSS 5 на Present и указал причину: «{why}». Это строка, нужная разработчику; она есть в отчёте." },
+        "zh-CN": { "title": "Present 路线已退出", "body": "引擎没有在 Present 启动 DLSS 5，并给出了原因：“{why}”。这正是开发者需要的那一行，报告中包含它。" }
+      }
+    },
+    {
+      "id": "present-hook-not-reached",
+      "severity": "problem",
+      "priority": 55,
+      "when": [
+        { "log": "optiscaler", "match": "300 upscale calls and not one Present reached the hook" }
+      ],
+      "fix": null,
+      "text": {
+        "en": { "title": "Something else took the game's Present", "body": "The game asked for its upscaler 300 times and not one Present reached DLSS 5's hook.", "causes": ["An overlay or another mod hooks Present first (RTSS, ReShade, Special K, Discord, Steam) -- turn it off for this game.", "Exclusive fullscreen -- switch the game to borderless."] },
+        "de": { "title": "Etwas anderes hat das Present des Spiels übernommen", "body": "Das Spiel hat 300-mal seinen Upscaler aufgerufen, und kein einziges Present erreichte den Hook von DLSS 5.", "causes": ["Ein Overlay oder ein anderer Mod hängt sich zuerst an Present (RTSS, ReShade, Special K, Discord, Steam) -- für dieses Spiel ausschalten.", "Exklusives Vollbild -- das Spiel auf randloses Fenster stellen."] },
+        "es": { "title": "Otra cosa tomó el Present del juego", "body": "El juego llamó a su reescalador 300 veces y ningún Present llegó al gancho de DLSS 5.", "causes": ["Un overlay u otro mod engancha Present primero (RTSS, ReShade, Special K, Discord, Steam): desactívalo para este juego.", "Pantalla completa exclusiva: cambia el juego a ventana sin bordes."] },
+        "fr": { "title": "Autre chose a pris le Present du jeu", "body": "Le jeu a appelé son upscaler 300 fois et aucun Present n'a atteint le hook de DLSS 5.", "causes": ["Un overlay ou un autre mod s'accroche d'abord à Present (RTSS, ReShade, Special K, Discord, Steam) : désactivez-le pour ce jeu.", "Plein écran exclusif : passez le jeu en fenêtré sans bordure."] },
+        "ko": { "title": "다른 무언가가 게임의 Present를 가져갔습니다", "body": "게임이 업스케일러를 300번 호출했지만 Present가 한 번도 DLSS 5의 후크에 도달하지 않았습니다.", "causes": ["오버레이나 다른 모드가 Present를 먼저 후킹함(RTSS, ReShade, Special K, Discord, Steam) -- 이 게임에서 끄세요.", "전용 전체 화면 -- 게임을 테두리 없는 창으로 바꾸세요."] },
+        "pt-BR": { "title": "Outra coisa tomou o Present do jogo", "body": "O jogo chamou o upscaler 300 vezes e nenhum Present chegou ao hook do DLSS 5.", "causes": ["Um overlay ou outro mod se conecta ao Present primeiro (RTSS, ReShade, Special K, Discord, Steam) -- desligue-o para este jogo.", "Tela cheia exclusiva -- mude o jogo para janela sem bordas."] },
+        "ru": { "title": "Present игры перехватило что-то другое", "body": "Игра 300 раз вызвала апскейлер, и ни один Present не дошёл до хука DLSS 5.", "causes": ["Оверлей или другой мод перехватывает Present первым (RTSS, ReShade, Special K, Discord, Steam) -- отключите его для этой игры.", "Эксклюзивный полноэкранный режим -- переключите игру на окно без рамки."] },
+        "zh-CN": { "title": "有别的东西接管了游戏的 Present", "body": "游戏调用了 300 次超分，但没有一次 Present 到达 DLSS 5 的挂钩。", "causes": ["覆盖层或其他模组先挂接了 Present（RTSS、ReShade、Special K、Discord、Steam）——为此游戏关闭它。", "独占全屏——把游戏切换为无边框窗口。"] }
+      }
+    },
+    {
+      "id": "exclusive-fullscreen-overlay",
+      "severity": "warning",
+      "priority": 50,
+      "when": [
+        { "log": "any", "match": "exclusive fullscreen" },
+        { "fact": "pc.overlayCount", "gte": 1 }
+      ],
+      "fix": null,
+      "text": {
+        "en": { "title": "Exclusive fullscreen with an overlay running", "body": "The game ran in exclusive fullscreen while {overlayCount} overlay or capture tool(s) were running (see PC in the report). Together they often keep DLSS 5's panel or frames away. Switch the game to borderless, or close the overlay for this game." },
+        "de": { "title": "Exklusives Vollbild mit laufendem Overlay", "body": "Das Spiel lief im exklusiven Vollbild, während {overlayCount} Overlay- oder Aufnahmeprogramm(e) liefen (siehe PC im Bericht). Zusammen halten sie oft das Panel oder die Bilder von DLSS 5 fern. Das Spiel auf randloses Fenster stellen oder das Overlay für dieses Spiel schließen." },
+        "es": { "title": "Pantalla completa exclusiva con un overlay activo", "body": "El juego se ejecutó en pantalla completa exclusiva mientras había {overlayCount} overlay(s) o herramienta(s) de captura en marcha (ver PC en el informe). Juntos suelen bloquear el panel o los fotogramas de DLSS 5. Cambia el juego a ventana sin bordes o cierra el overlay para este juego." },
+        "fr": { "title": "Plein écran exclusif avec un overlay actif", "body": "Le jeu tournait en plein écran exclusif pendant que {overlayCount} overlay(s) ou outil(s) de capture fonctionnaient (voir PC dans le rapport). Ensemble, ils bloquent souvent le panneau ou les images de DLSS 5. Passez le jeu en fenêtré sans bordure, ou fermez l'overlay pour ce jeu." },
+        "ko": { "title": "오버레이가 실행 중인 전용 전체 화면", "body": "게임이 전용 전체 화면으로 실행되는 동안 오버레이 또는 캡처 도구 {overlayCount}개가 실행 중이었습니다(보고서의 PC 항목 참조). 둘이 함께 있으면 DLSS 5의 패널이나 프레임이 막히는 경우가 많습니다. 게임을 테두리 없는 창으로 바꾸거나 이 게임에서 오버레이를 닫으세요." },
+        "pt-BR": { "title": "Tela cheia exclusiva com um overlay rodando", "body": "O jogo rodou em tela cheia exclusiva enquanto {overlayCount} overlay(s) ou ferramenta(s) de captura estavam abertos (veja PC no relatório). Juntos eles costumam bloquear o painel ou os quadros do DLSS 5. Mude o jogo para janela sem bordas ou feche o overlay para este jogo." },
+        "ru": { "title": "Эксклюзивный полноэкранный режим с оверлеем", "body": "Игра работала в эксклюзивном полноэкранном режиме, пока были запущены оверлеи или программы записи ({overlayCount}, см. раздел PC в отчёте). Вместе они часто не пускают панель или кадры DLSS 5. Переключите игру на окно без рамки или закройте оверлей для этой игры." },
+        "zh-CN": { "title": "独占全屏且有覆盖层在运行", "body": "游戏以独占全屏运行时，有 {overlayCount} 个覆盖层或录制工具在运行（见报告中的 PC 部分）。两者同时存在常会挡住 DLSS 5 的面板或画面。把游戏切换为无边框窗口，或为此游戏关闭覆盖层。" }
+      }
+    },
+    {
+      "id": "fg-auto-off",
+      "severity": "info",
+      "priority": 45,
+      "when": [
+        { "log": "fgoff", "match": "^(?<why>[^\\r\\n]+)" }
+      ],
+      "fix": null,
+      "text": {
+        "en": { "title": "The engine turned frame generation off for this game", "body": "After the GPU was lost with frame generation on, the engine stopped arming it automatically: \"{why}\". Pick a frame generator on the panel's Main page to try again; the next engine update also clears this." },
+        "de": { "title": "Die Engine hat die Bildgenerierung für dieses Spiel abgeschaltet", "body": "Nachdem die GPU mit eingeschalteter Bildgenerierung verloren ging, schaltet die Engine sie nicht mehr automatisch ein: \"{why}\". Im Panel auf der Seite Main einen Bildgenerator wählen, um es erneut zu versuchen; das nächste Engine-Update setzt es ebenfalls zurück." },
+        "es": { "title": "El motor desactivó la generación de fotogramas en este juego", "body": "Tras perder la GPU con la generación de fotogramas activada, el motor dejó de activarla automáticamente: \"{why}\". Elige un generador de fotogramas en la página Main del panel para volver a intentarlo; la próxima actualización del motor también lo borra." },
+        "fr": { "title": "Le moteur a désactivé la génération d'images pour ce jeu", "body": "Après une perte du GPU avec la génération d'images active, le moteur ne l'active plus automatiquement : « {why} ». Choisissez un générateur d'images dans la page Main du panneau pour réessayer ; la prochaine mise à jour du moteur l'efface aussi." },
+        "ko": { "title": "엔진이 이 게임의 프레임 생성을 껐습니다", "body": "프레임 생성이 켜진 상태에서 GPU를 잃은 뒤 엔진이 더 이상 자동으로 켜지 않습니다: \"{why}\". 다시 시도하려면 패널의 Main 페이지에서 프레임 생성기를 고르세요. 다음 엔진 업데이트도 이를 지웁니다." },
+        "pt-BR": { "title": "O motor desligou a geração de quadros neste jogo", "body": "Depois de perder a GPU com a geração de quadros ligada, o motor parou de ligá-la automaticamente: \"{why}\". Escolha um gerador de quadros na página Main do painel para tentar de novo; a próxima atualização do motor também limpa isso." },
+        "ru": { "title": "Движок отключил генерацию кадров для этой игры", "body": "После потери GPU с включённой генерацией кадров движок больше не включает её автоматически: «{why}». Выберите генератор кадров на странице Main панели, чтобы попробовать снова; следующее обновление движка тоже это сбросит." },
+        "zh-CN": { "title": "引擎为此游戏关闭了帧生成", "body": "在开启帧生成时丢失 GPU 后，引擎不再自动开启它：“{why}”。在面板的 Main 页面选择一个帧生成器即可重试；下一次引擎更新也会清除此状态。" }
+      }
+    },
+    {
+      "id": "gpu-resets",
+      "severity": "warning",
+      "priority": 45,
+      "when": [
+        { "event": "nvlddmkm (?:13|14|153)\\b|Display 4101\\b|LiveKernelEvent" }
+      ],
+      "fix": null,
+      "text": {
+        "en": { "title": "Windows logged GPU resets this week", "body": "The System event log shows the display driver resetting the GPU (listed under PC in the report). A GPU that resets on its own makes every route look broken.", "causes": ["A GPU overclock or undervolt -- go back to stock clocks and try again.", "Video memory running out -- see the video memory finding if there is one.", "An outdated or damaged driver -- reinstall the current NVIDIA driver."] },
+        "de": { "title": "Windows hat diese Woche GPU-Resets protokolliert", "body": "Das Systemereignisprotokoll zeigt, dass der Grafiktreiber die GPU zurückgesetzt hat (im Bericht unter PC). Eine GPU, die sich von selbst zurücksetzt, lässt jede Route kaputt aussehen.", "causes": ["Eine Übertaktung oder Undervolting der GPU -- auf Standardtakt zurück und erneut testen.", "Der Videospeicher geht aus -- siehe den Befund zum Videospeicher, falls vorhanden.", "Ein veralteter oder beschädigter Treiber -- den aktuellen NVIDIA-Treiber neu installieren."] },
+        "es": { "title": "Windows registró reinicios de la GPU esta semana", "body": "El registro de eventos del sistema muestra que el controlador gráfico reinició la GPU (listado en PC en el informe). Una GPU que se reinicia sola hace que cualquier ruta parezca rota.", "causes": ["Overclock o undervolt de la GPU: vuelve a las frecuencias de fábrica y prueba otra vez.", "Memoria de vídeo agotada: mira el hallazgo de memoria de vídeo si lo hay.", "Un controlador antiguo o dañado: reinstala el controlador NVIDIA actual."] },
+        "fr": { "title": "Windows a enregistré des réinitialisations du GPU cette semaine", "body": "Le journal d'événements système montre que le pilote graphique a réinitialisé le GPU (listé sous PC dans le rapport). Un GPU qui se réinitialise tout seul fait paraître chaque route cassée.", "causes": ["Un overclocking ou un undervolt du GPU : revenez aux fréquences d'origine et réessayez.", "La mémoire vidéo est saturée : voyez le constat sur la mémoire vidéo s'il y en a un.", "Un pilote ancien ou endommagé : réinstallez le pilote NVIDIA actuel."] },
+        "ko": { "title": "이번 주에 Windows가 GPU 재설정을 기록했습니다", "body": "시스템 이벤트 로그에 디스플레이 드라이버가 GPU를 재설정한 기록이 있습니다(보고서의 PC 항목). GPU가 스스로 재설정되면 모든 경로가 고장 난 것처럼 보입니다.", "causes": ["GPU 오버클럭 또는 언더볼트 -- 기본 클럭으로 되돌리고 다시 시도하세요.", "비디오 메모리 부족 -- 비디오 메모리 항목이 있으면 확인하세요.", "오래되었거나 손상된 드라이버 -- 최신 NVIDIA 드라이버를 다시 설치하세요."] },
+        "pt-BR": { "title": "O Windows registrou reinícios da GPU nesta semana", "body": "O log de eventos do sistema mostra o driver de vídeo reiniciando a GPU (listado em PC no relatório). Uma GPU que reinicia sozinha faz qualquer rota parecer quebrada.", "causes": ["Overclock ou undervolt da GPU -- volte aos clocks de fábrica e tente de novo.", "Memória de vídeo esgotada -- veja o item de memória de vídeo, se houver.", "Driver antigo ou corrompido -- reinstale o driver NVIDIA atual."] },
+        "ru": { "title": "На этой неделе Windows записала сбросы GPU", "body": "Системный журнал событий показывает, что видеодрайвер сбрасывал GPU (список в разделе PC отчёта). Если GPU сбрасывается сам, любой маршрут выглядит сломанным.", "causes": ["Разгон или андервольтинг GPU -- верните заводские частоты и попробуйте снова.", "Заканчивается видеопамять -- см. пункт о видеопамяти, если он есть.", "Устаревший или повреждённый драйвер -- переустановите актуальный драйвер NVIDIA."] },
+        "zh-CN": { "title": "Windows 本周记录了 GPU 重置", "body": "系统事件日志显示显卡驱动重置过 GPU（列在报告的 PC 部分）。GPU 自行重置会让任何路线看起来都坏了。", "causes": ["GPU 超频或降压——恢复默认频率后重试。", "显存耗尽——如有显存相关的发现，请查看。", "驱动过旧或损坏——重新安装当前的 NVIDIA 驱动。"] }
+      }
+    },
+    {
+      "id": "nr-blocked-live",
+      "severity": "problem",
+      "priority": 52,
+      "when": [
+        { "live": "nr.reason", "match": "\\S", "as": "reason" }
+      ],
+      "fix": null,
+      "text": {
+        "en": { "title": "DLSS 5 is blocked for this session", "body": "The engine blocked DLSS 5 and said why: \"{reason}\"." },
+        "de": { "title": "DLSS 5 ist für diese Sitzung blockiert", "body": "Die Engine hat DLSS 5 blockiert und den Grund genannt: \"{reason}\"." },
+        "es": { "title": "DLSS 5 está bloqueado en esta sesión", "body": "El motor bloqueó DLSS 5 y dijo por qué: \"{reason}\"." },
+        "fr": { "title": "DLSS 5 est bloqué pour cette session", "body": "Le moteur a bloqué DLSS 5 et a dit pourquoi : « {reason} »." },
+        "ko": { "title": "이번 세션에서 DLSS 5가 차단되었습니다", "body": "엔진이 DLSS 5를 차단하고 이유를 남겼습니다: \"{reason}\"." },
+        "pt-BR": { "title": "O DLSS 5 está bloqueado nesta sessão", "body": "O motor bloqueou o DLSS 5 e disse o motivo: \"{reason}\"." },
+        "ru": { "title": "DLSS 5 заблокирован в этом сеансе", "body": "Движок заблокировал DLSS 5 и указал причину: «{reason}»." },
+        "zh-CN": { "title": "DLSS 5 在本次会话中被阻止", "body": "引擎阻止了 DLSS 5，并给出了原因：“{reason}”。" }
+      }
+    }
+  ],
+  "engines": [],
+  "games": [
+    {
+      "exe": "prey.exe",
+      "name": "Prey (2017)",
+      "rules": [
+        {
+          "id": "prey-aa-mode",
+          "severity": "problem",
+          "priority": 80,
+          "when": [
+            { "fact": "game.preyAa", "lte": 2, "as": "mode" }
+          ],
+          "fix": { "action": "prey-cfg-fix" },
+          "text": {
+            "en": { "title": "Prey's anti-aliasing leaves DLSS nothing to replace", "body": "Luma's Prey mod runs DLSS in place of TAA or SMAA 2TX, and Prey's game.cfg has r_AntialiasingMode = {mode}. Prey rewrites that file from its menu on every start, so the app sets it to SMAA 2TX (3, the value the game keeps) and keeps your original as game.cfg.dlss5ui-orig. Pick SMAA 2TX or TAA in the game's menu too." },
+            "de": { "title": "Preys Kantenglättung lässt DLSS nichts zum Ersetzen", "body": "Lumas Prey-Mod führt DLSS anstelle von TAA oder SMAA 2TX aus, und Preys game.cfg hat r_AntialiasingMode = {mode}. Prey schreibt diese Datei bei jedem Start aus seinem Menü neu, daher stellt die App sie auf SMAA 2TX (3, den Wert, den das Spiel behält) und behält dein Original als game.cfg.dlss5ui-orig. Wähle auch im Spielmenü SMAA 2TX oder TAA." },
+            "es": { "title": "El antialiasing de Prey no deja nada que DLSS pueda sustituir", "body": "El mod de Prey de Luma ejecuta DLSS en lugar de TAA o SMAA 2TX, y el game.cfg de Prey tiene r_AntialiasingMode = {mode}. Prey reescribe ese archivo desde su menú en cada inicio, así que la app lo pone en SMAA 2TX (3, el valor que el juego conserva) y guarda tu original como game.cfg.dlss5ui-orig. Elige también SMAA 2TX o TAA en el menú del juego." },
+            "fr": { "title": "L'anticrénelage de Prey ne laisse rien à remplacer pour DLSS", "body": "Le mod Prey de Luma exécute DLSS à la place du TAA ou du SMAA 2TX, et le game.cfg de Prey contient r_AntialiasingMode = {mode}. Prey réécrit ce fichier depuis son menu à chaque démarrage, donc l'application le règle sur SMAA 2TX (3, la valeur que le jeu conserve) et garde votre original sous game.cfg.dlss5ui-orig. Choisissez aussi SMAA 2TX ou TAA dans le menu du jeu." },
+            "ko": { "title": "Prey의 안티앨리어싱 설정으로는 DLSS가 대신할 것이 없습니다", "body": "Luma의 Prey 모드는 TAA 또는 SMAA 2TX 대신 DLSS를 실행하는데, Prey의 game.cfg에는 r_AntialiasingMode = {mode}가 있습니다. Prey는 시작할 때마다 메뉴 설정으로 이 파일을 다시 쓰므로, 앱이 SMAA 2TX(게임이 유지하는 값 3)로 설정하고 원본은 game.cfg.dlss5ui-orig로 보관합니다. 게임 메뉴에서도 SMAA 2TX 또는 TAA를 고르세요." },
+            "pt-BR": { "title": "O anti-aliasing do Prey não deixa nada para o DLSS substituir", "body": "O mod de Prey do Luma roda o DLSS no lugar do TAA ou SMAA 2TX, e o game.cfg do Prey tem r_AntialiasingMode = {mode}. O Prey reescreve esse arquivo a partir do menu a cada início, então o app define SMAA 2TX (3, o valor que o jogo mantém) e guarda seu original como game.cfg.dlss5ui-orig. Escolha também SMAA 2TX ou TAA no menu do jogo." },
+            "ru": { "title": "Сглаживание Prey не оставляет DLSS что заменять", "body": "Мод Luma для Prey запускает DLSS вместо TAA или SMAA 2TX, а в game.cfg игры стоит r_AntialiasingMode = {mode}. Prey переписывает этот файл из своего меню при каждом запуске, поэтому приложение ставит SMAA 2TX (3 -- значение, которое игра сохраняет) и сохраняет ваш оригинал как game.cfg.dlss5ui-orig. Выберите SMAA 2TX или TAA и в меню игры." },
+            "zh-CN": { "title": "Prey 的抗锯齿设置让 DLSS 无可替代", "body": "Luma 的 Prey 模组用 DLSS 替代 TAA 或 SMAA 2TX，而 Prey 的 game.cfg 中 r_AntialiasingMode = {mode}。Prey 每次启动都会根据菜单重写该文件，因此应用会将其设为 SMAA 2TX（3，游戏会保留的值），并把原文件保存为 game.cfg.dlss5ui-orig。也请在游戏菜单中选择 SMAA 2TX 或 TAA。" }
+          }
+        }
+      ]
+    }
+  ]
+}
